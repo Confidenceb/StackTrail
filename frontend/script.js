@@ -1156,31 +1156,112 @@ function renderApp() {
   }
 }
 
-function triggerBodyPulse() {
-  const body = document.body;
-  const themes = [
-    "radial-gradient(circle at top left, rgba(75, 183, 255, 0.18), transparent 22%), linear-gradient(180deg, #0d1520, #111d2e)",
-    "radial-gradient(circle at top right, rgba(53, 208, 160, 0.16), transparent 24%), linear-gradient(180deg, #0d1520, #0d1d2f)",
-    "radial-gradient(circle at center, rgba(139, 92, 246, 0.16), transparent 28%), linear-gradient(180deg, #0d1520, #101c2b)",
-  ];
+const BODY_THEME_SHADES = [
+  {
+    "bg-base": "#071822",
+    "bg-deep": "#040d16",
+    "panel-bg": "rgba(18, 30, 42, 0.56)",
+    "panel-strong": "rgba(12, 22, 32, 0.72)",
+    "panel-border": "rgba(156, 204, 255, 0.18)",
+    "glow-soft": "rgba(80, 167, 255, 0.15)",
+    glow: "rgba(122, 205, 255, 0.22)",
+  },
+  {
+    "bg-base": "#0b1f2d",
+    "bg-deep": "#071a27",
+    "panel-bg": "rgba(25, 43, 61, 0.6)",
+    "panel-strong": "rgba(18, 34, 49, 0.76)",
+    "panel-border": "rgba(170, 215, 255, 0.2)",
+    "glow-soft": "rgba(101, 188, 255, 0.17)",
+    glow: "rgba(147, 214, 255, 0.26)",
+  },
+  {
+    "bg-base": "#102b42",
+    "bg-deep": "#081c2d",
+    "panel-bg": "rgba(31, 54, 76, 0.62)",
+    "panel-strong": "rgba(22, 40, 60, 0.78)",
+    "panel-border": "rgba(179, 225, 255, 0.24)",
+    "glow-soft": "rgba(122, 205, 255, 0.2)",
+    glow: "rgba(178, 227, 255, 0.28)",
+  },
+  {
+    "bg-base": "#133853",
+    "bg-deep": "#0a243e",
+    "panel-bg": "rgba(41, 68, 92, 0.64)",
+    "panel-strong": "rgba(28, 48, 69, 0.8)",
+    "panel-border": "rgba(191, 231, 255, 0.26)",
+    "glow-soft": "rgba(145, 216, 255, 0.22)",
+    glow: "rgba(190, 236, 255, 0.3)",
+  },
+  {
+    "bg-base": "#1b4f75",
+    "bg-deep": "#112f48",
+    "panel-bg": "rgba(52, 82, 112, 0.68)",
+    "panel-strong": "rgba(34, 56, 80, 0.82)",
+    "panel-border": "rgba(203, 239, 255, 0.3)",
+    "glow-soft": "rgba(167, 219, 255, 0.24)",
+    glow: "rgba(214, 243, 255, 0.32)",
+  },
+];
 
-  const nextTheme = themes[Math.floor(Math.random() * themes.length)];
-  body.style.background = nextTheme;
-  body.classList.remove("body-glow");
-  void body.offsetWidth;
-  body.classList.add("body-glow");
+let currentBodyThemeIndex = 0;
 
-  window.clearTimeout(triggerBodyPulse.timeoutId);
-  triggerBodyPulse.timeoutId = window.setTimeout(() => {
-    body.style.background = "";
-    body.classList.remove("body-glow");
-  }, 650);
+function isActionClickTarget(target) {
+  return Boolean(
+    target.closest(
+      "button, a, input, select, textarea, [role='button'], [data-action], [data-close-modal], .modal",
+    ),
+  );
+}
+
+function cycleBodyTheme() {
+  currentBodyThemeIndex =
+    (currentBodyThemeIndex + 1) % BODY_THEME_SHADES.length;
+  const theme = BODY_THEME_SHADES[currentBodyThemeIndex];
+  const root = document.documentElement;
+
+  Object.entries(theme).forEach(([key, value]) => {
+    root.style.setProperty(`--${key}`, value);
+  });
+}
+
+function closeActiveModal() {
+  const openModal = document.querySelector(".modal-backdrop:not(.hidden)");
+  if (!openModal) {
+    return;
+  }
+
+  if (openModal.id === "roadmapModalBackdrop") {
+    closeRoadmapModal();
+    return;
+  }
+
+  if (openModal.id === "milestoneModalBackdrop") {
+    closeMilestoneModal();
+  }
 }
 
 function initializeEvents() {
   document.addEventListener("click", (event) => {
+    const modalBackdrop = event.target.closest(".modal-backdrop");
+    if (modalBackdrop && event.target === modalBackdrop) {
+      closeActiveModal();
+      return;
+    }
+
+    if (isActionClickTarget(event.target)) {
+      handleDocumentClick(event);
+      return;
+    }
+
     handleDocumentClick(event);
-    triggerBodyPulse();
+    cycleBodyTheme();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeActiveModal();
+    }
   });
 
   document.addEventListener("change", handleStatusSelectChange);

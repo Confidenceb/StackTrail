@@ -1,5 +1,6 @@
 :root {
   --bg-base: #0d1520;
+  --bg-deep: #08131d;
   --bg-secondary: #111c2b;
   --surface: #172333;
   --surface-strong: #1b2a3e;
@@ -7,6 +8,9 @@
   --surface-alt: #101b2d;
   --card: rgba(23, 35, 51, 0.95);
   --card-strong: #1a2a3c;
+  --panel-bg: rgba(22, 34, 49, 0.9);
+  --panel-strong: rgba(18, 29, 41, 0.95);
+  --panel-border: rgba(149, 171, 198, 0.18);
   --border: rgba(149, 171, 198, 0.18);
   --border-strong: rgba(149, 171, 198, 0.28);
   --text-primary: #edf4ff;
@@ -20,6 +24,8 @@
   --warning-soft: rgba(255, 180, 84, 0.16);
   --danger: #ff6f7d;
   --danger-soft: rgba(255, 111, 125, 0.18);
+  --glow-soft: rgba(75, 183, 255, 0.12);
+  --glow: rgba(75, 183, 255, 0.2);
   --shadow-soft: 0 18px 42px rgba(4, 9, 18, 0.35);
   --shadow-card: 0 16px 30px rgba(7, 13, 23, 0.18);
   --radius-sm: 10px;
@@ -40,17 +46,15 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(
-      circle at top left,
-      rgba(75, 183, 255, 0.08),
-      transparent 28%
-    ),
-    linear-gradient(180deg, var(--bg-base), #0a1320 100%);
+    radial-gradient(circle at top left, var(--glow-soft), transparent 26%),
+    linear-gradient(180deg, var(--bg-base), var(--bg-deep) 100%);
   color: var(--text-primary);
   font-family: "Inter", sans-serif;
   overflow-x: hidden;
   position: relative;
-  transition: background 0.6s ease;
+  transition:
+    background 0.9s ease,
+    color 0.25s ease;
 }
 
 body::before {
@@ -58,18 +62,12 @@ body::before {
   position: fixed;
   inset: -18% -10%;
   pointer-events: none;
-  background: radial-gradient(
-    circle at center,
-    rgba(75, 183, 255, 0.18),
-    transparent 42%
-  );
-  opacity: 0;
-  transform: scale(0.94);
+  background: radial-gradient(circle at center, var(--glow), transparent 40%);
+  opacity: 0.7;
+  transform: scale(0.98);
+  filter: blur(26px);
   z-index: 0;
-}
-
-body.body-glow::before {
-  animation: bodyGlow 700ms ease-out;
+  animation: bodyGlow 9s ease-in-out infinite alternate;
 }
 
 @keyframes bodyGlow {
@@ -443,12 +441,15 @@ img {
   padding: 1.5rem 1.5rem;
   background: linear-gradient(
     135deg,
-    rgba(22, 33, 48, 0.95),
+    var(--panel-strong),
     rgba(18, 30, 45, 0.92)
   );
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: 22px;
   box-shadow: var(--shadow-card);
+  transition:
+    background 0.7s ease,
+    border-color 0.7s ease;
 }
 
 .hero-content {
@@ -552,11 +553,22 @@ img {
 .roadmap-card,
 .activity-item,
 .goal-item {
-  background: rgba(22, 34, 49, 0.9);
-  border: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06),
+    var(--panel-bg)
+  );
+  border: 1px solid var(--panel-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 20px 50px rgba(2, 8, 15, 0.24);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   animation: liftCard 0.45s ease-out;
+  transition:
+    background 0.9s ease,
+    border-color 0.9s ease,
+    box-shadow 0.9s ease,
+    backdrop-filter 0.9s ease;
 }
 
 .stat-card {
@@ -830,13 +842,16 @@ img {
 
 .roadmap-header-card {
   padding: 1.2rem 1.25rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: var(--radius-lg);
   background: linear-gradient(
     180deg,
-    rgba(19, 29, 41, 0.9),
+    var(--panel-strong),
     rgba(18, 25, 36, 0.7)
   );
+  transition:
+    background 0.7s ease,
+    border-color 0.7s ease;
 }
 
 .roadmap-header-top {
