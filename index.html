@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="StackTrail helps developers build learning roadmaps, track milestones, and visualize progress toward technical skills."
+    />
+    <title>StackTrail | Build skills. Track progress. Keep moving.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand-block">
+          <div class="brand-mark">S</div>
+          <div class="brand-copy">
+            <span class="brand-name">StackTrail</span>
+            <small>Learning OS</small>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <button class="nav-item active" data-nav="overview" type="button">
+            <i class="fa-solid fa-house"></i>
+            <span>Overview</span>
+          </button>
+          <button class="nav-item" data-nav="roadmaps" type="button">
+            <i class="fa-solid fa-route"></i>
+            <span>My Roadmaps</span>
+          </button>
+          <button class="nav-item" data-nav="explore" type="button">
+            <i class="fa-solid fa-compass"></i>
+            <span>Explore</span>
+          </button>
+          <button class="nav-item" data-nav="settings" type="button">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-group">
+          <div class="section-label">Roadmaps</div>
+          <div id="sidebarRoadmapList" class="sidebar-roadmap-list"></div>
+        </div>
+
+        <div class="user-card">
+          <div class="avatar">JB</div>
+          <div class="user-meta">
+            <strong>Jamiu B.</strong>
+            <span>Product Engineer</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="mobile-overlay" id="mobileOverlay"></div>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button
+              class="mobile-menu-button"
+              id="mobileMenuButton"
+              type="button"
+              aria-label="Toggle navigation"
+            >
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h2 id="pageTitle">Overview</h2>
+            </div>
+          </div>
+
+          <button class="primary-button" id="newRoadmapButton" type="button">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Roadmap</span>
+          </button>
+        </header>
+
+        <div id="appContent" class="content"></div>
+      </main>
+    </div>
+
+    <footer class="app-footer">
+      <span>Built by <strong>OlaCloud</strong></span>
+    </footer>
+
+    <div class="modal-backdrop hidden" id="roadmapModalBackdrop">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="roadmapModalTitle"
+      >
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Roadmap</p>
+            <h3 id="roadmapModalTitle">Create roadmap</h3>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-modal="roadmap"
+            aria-label="Close modal"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="roadmapForm" class="modal-form">
+          <input type="hidden" id="roadmapId" />
+
+          <div class="form-group">
+            <label for="roadmapTitle">Roadmap title</label>
+            <input
+              id="roadmapTitle"
+              name="title"
+              type="text"
+              maxlength="80"
+              placeholder="e.g. DevOps Engineering"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="roadmapDescription">Description</label>
+            <textarea
+              id="roadmapDescription"
+              name="description"
+              rows="4"
+              maxlength="220"
+              placeholder="What will this roadmap help you build?"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="roadmapCategory">Category</label>
+            <select id="roadmapCategory" name="category">
+              <option value="DevOps">DevOps</option>
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Cloud">Cloud</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Data Science">Data Science</option>
+              <option value="AI & ML">AI & ML</option>
+              <option value="Software Engineering">Software Engineering</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              class="secondary-button"
+              type="button"
+              data-close-modal="roadmap"
+            >
+              Cancel
+            </button>
+            <button class="primary-button" type="submit">Save roadmap</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-backdrop hidden" id="milestoneModalBackdrop">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="milestoneModalTitle"
+      >
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Milestone</p>
+            <h3 id="milestoneModalTitle">Add milestone</h3>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-modal="milestone"
+            aria-label="Close modal"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="milestoneForm" class="modal-form">
+          <input type="hidden" id="milestoneRoadmapId" />
+          <input type="hidden" id="milestoneId" />
+
+          <div class="form-group">
+            <label for="milestoneTitle">Milestone title</label>
+            <input
+              id="milestoneTitle"
+              name="title"
+              type="text"
+              maxlength="80"
+              placeholder="e.g. Docker networking"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="milestoneDescription">Description</label>
+            <textarea
+              id="milestoneDescription"
+              name="description"
+              rows="4"
+              maxlength="220"
+              placeholder="What should be learned or completed?"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="milestoneStatus">Status</label>
+              <select id="milestoneStatus" name="status">
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="milestoneDate">Target date</label>
+              <input id="milestoneDate" name="date" type="date" />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              class="secondary-button"
+              type="button"
+              data-close-modal="milestone"
+            >
+              Cancel
+            </button>
+            <button class="primary-button" type="submit">Save milestone</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
